@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>for you.</title>
+    <style>
+        @import url('https://googleapis.com');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fcfbfa; /* Soft aesthetic warm white */
+            color: #3a3937;
+            overflow: hidden;
+            user-select: none;
+            transition: background-color 1.5s ease;
+        }
+
+        /* Screen Wrapper */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        /* Typography */
+        .text-main {
+            font-size: 2.2rem;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .text-sub {
+            font-size: 0.9rem;
+            color: #a19e9a;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Interactive Card for Final Question */
+        .card {
+            background: #ffffff;
+            padding: 60px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            max-width: 440px;
+            width: 90%;
+            cursor: default;
+        }
+
+        .card h1 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            color: #2b2a28;
+        }
+
+        /* Buttons Layout */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            height: 50px;
+            position: relative;
+        }
+
+        button {
+            padding: 0 32px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.1s;
+        }
+
+        #yes-btn {
+            background-color: #1e1e1e; /* Minimal stark dark button */
+            color: #ffffff;
+        }
+
+        #yes-btn:hover {
+            background-color: #333333;
+        }
+
+        #no-btn {
+            background-color: #f0eeeb;
+            color: #7a7772;
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Conscience Messages */
+        #guilt-msg {
+            margin-top: 35px;
+            font-size: 0.95rem;
+            color: #bd6a6a; /* Muted aesthetic red */
+            font-weight: 300;
+            min-height: 24px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1 -->
+    <div id="screen1" class="screen" onclick="goToScreen(2)">
+        <p class="text-main">i like you.</p>
+        <p class="text-sub">tap anywhere</p>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div id="screen2" class="screen hidden" onclick="goToScreen(3)">
+        <p class="text-main">and...</p>
+        <p class="text-sub">tap anywhere</p>
+    </div>
+
+    <!-- SCREEN 3 (The Question) -->
+    <div id="screen3" class="screen hidden" style="cursor: default;">
+        <div class="card">
+            <h1 id="question-text">do you like me too?</h1>
+            <div class="btn-group">
+                <button id="yes-btn" onclick="celebrate()">yes</button>
+                <button id="no-btn" onmouseover="evadeAndGuilt()" onclick="evadeAndGuilt()" ontouchstart="evadeAndGuilt()">no</button>
+            </div>
+            <p id="guilt-msg"></p>
+        </div>
+    </div>
+
+    <script>
+        // Array of conscience-hitting messages
+        const messages = [
+            "are you really sure? 🥺",
+            "but we look so good together...",
+            "my heart just skipped a beat (in a bad way)",
+            "processing this rejection... it hurts.",
+            "give me just one chance?",
+            "recalculating your choices... click yes instead.",
+            "wow. cold-hearted. 💔",
+            "are you testing my patience or my feelings?",
+            "i promise to buy you iced coffee/food forever."
+        ];
+        
+        let messageIndex = 0;
+
+        function goToScreen(nextNum) {
+            if (nextNum === 2) {
+                document.getElementById('screen1').classList.add('fade-out');
+                setTimeout(() => {
+                    document.getElementById('screen1').classList.add('hidden');
+                    document.getElementById('screen2').classList.remove('hidden');
+                }, 800);
+            } else if (nextNum === 3) {
+                document.getElementById('screen2').classList.add('fade-out');
+                setTimeout(() => {
+                    document.getElementById('screen2').classList.add('hidden');
+                    document.getElementById('screen3').classList.remove('hidden');
+                }, 800);
+            }
+        }
+
+        function evadeAndGuilt() {
+            const noBtn = document.getElementById('no-btn');
+            const guiltMsg = document.getElementById('guilt-msg');
+
+            // 1. Move the No Button randomly across the viewable screen area
+            noBtn.style.position = 'fixed';
+            const padding = 80;
+            const randomX = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
+            const randomY = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // 2. Cycle through the guilt-trip messages seamlessly
+            guiltMsg.style.opacity = 0;
+            setTimeout(() => {
+                guiltMsg.innerText = messages[messageIndex];
+                guiltMsg.style.opacity = 1;
+                
+                // Advance to next message or loop back
+                messageIndex = (messageIndex + 1) % messages.length;
+            }, 150);
+        }
+
+        function celebrate() {
+            // Clean up elements smoothly
+            const noBtn = document.getElementById('no-btn');
+            if (noBtn) noBtn.remove();
+            
+            document.getElementById('guilt-msg').remove();
+            
+            // Minimalist successful state background change
+            document.body.style.backgroundColor = "#f4f7f4"; /* Very soft sage/olive tint */
+            
+            const card = document.querySelector('.card');
+            card.innerHTML = `<h1 style="margin: 0; font-weight: 300; color: #435443;">i knew you'd say yes. ♡</h1>`;
+        }
+    </script>
+</body>
+</html>
